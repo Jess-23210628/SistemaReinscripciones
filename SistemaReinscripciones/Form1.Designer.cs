@@ -23,6 +23,14 @@
             this.mnuPaquetes = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuSalir = new System.Windows.Forms.ToolStripMenuItem();
             this.pnlContenedor = new System.Windows.Forms.Panel();
+            this.pnlMaterias = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtBuscarMat = new System.Windows.Forms.TextBox();
+            this.btnBuscarMat = new System.Windows.Forms.Button();
+            this.btnAgregarMat = new System.Windows.Forms.Button();
+            this.btnEditarMat = new System.Windows.Forms.Button();
+            this.btnEliminarMat = new System.Windows.Forms.Button();
+            this.dgvMaterias = new System.Windows.Forms.DataGridView();
             this.pnlAlumnos = new System.Windows.Forms.Panel();
             this.lblTituloAl = new System.Windows.Forms.Label();
             this.txtBuscarAl = new System.Windows.Forms.TextBox();
@@ -32,14 +40,6 @@
             this.btnEliminar = new System.Windows.Forms.Button();
             this.dgvAlumnos = new System.Windows.Forms.DataGridView();
             this.pnlEditAlumno = new System.Windows.Forms.Panel();
-            this.pnlMaterias = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtBuscarMat = new System.Windows.Forms.TextBox();
-            this.btnBuscarMat = new System.Windows.Forms.Button();
-            this.btnAgregarMat = new System.Windows.Forms.Button();
-            this.btnEditarMat = new System.Windows.Forms.Button();
-            this.btnEliminarMat = new System.Windows.Forms.Button();
-            this.dgvMaterias = new System.Windows.Forms.DataGridView();
             this.pnlHorarios = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.txtBuscarHor = new System.Windows.Forms.TextBox();
@@ -95,10 +95,10 @@
             this.lblNumcontrol = new System.Windows.Forms.Label();
             this.mnuPrincipal.SuspendLayout();
             this.pnlContenedor.SuspendLayout();
-            this.pnlAlumnos.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAlumnos)).BeginInit();
             this.pnlMaterias.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMaterias)).BeginInit();
+            this.pnlAlumnos.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAlumnos)).BeginInit();
             this.pnlHorarios.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHorarios)).BeginInit();
             this.pnlReinscripcion.SuspendLayout();
@@ -189,9 +189,9 @@
             // 
             // pnlContenedor
             // 
-            this.pnlContenedor.Controls.Add(this.pnlAlumnos);
-            this.pnlContenedor.Controls.Add(this.pnlMaterias);
             this.pnlContenedor.Controls.Add(this.pnlHorarios);
+            this.pnlContenedor.Controls.Add(this.pnlMaterias);
+            this.pnlContenedor.Controls.Add(this.pnlAlumnos);
             this.pnlContenedor.Controls.Add(this.pnlReinscripcion);
             this.pnlContenedor.Controls.Add(this.pnlPaquetes);
             this.pnlContenedor.Controls.Add(this.pnlCalificaciones);
@@ -202,6 +202,82 @@
             this.pnlContenedor.Name = "pnlContenedor";
             this.pnlContenedor.Size = new System.Drawing.Size(1037, 612);
             this.pnlContenedor.TabIndex = 1;
+            // 
+            // pnlMaterias
+            // 
+            this.pnlMaterias.Controls.Add(this.label1);
+            this.pnlMaterias.Controls.Add(this.txtBuscarMat);
+            this.pnlMaterias.Controls.Add(this.btnBuscarMat);
+            this.pnlMaterias.Controls.Add(this.btnAgregarMat);
+            this.pnlMaterias.Controls.Add(this.btnEditarMat);
+            this.pnlMaterias.Controls.Add(this.btnEliminarMat);
+            this.pnlMaterias.Controls.Add(this.dgvMaterias);
+            this.pnlMaterias.Location = new System.Drawing.Point(682, 82);
+            this.pnlMaterias.Name = "pnlMaterias";
+            this.pnlMaterias.Size = new System.Drawing.Size(180, 99);
+            this.pnlMaterias.TabIndex = 2;
+            this.pnlMaterias.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(157, 19);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Catálogo de Materias";
+            // 
+            // txtBuscarMat
+            // 
+            this.txtBuscarMat.Location = new System.Drawing.Point(12, 40);
+            this.txtBuscarMat.Name = "txtBuscarMat";
+            this.txtBuscarMat.Size = new System.Drawing.Size(300, 25);
+            this.txtBuscarMat.TabIndex = 1;
+            // 
+            // btnBuscarMat
+            // 
+            this.btnBuscarMat.Location = new System.Drawing.Point(320, 38);
+            this.btnBuscarMat.Name = "btnBuscarMat";
+            this.btnBuscarMat.Size = new System.Drawing.Size(90, 30);
+            this.btnBuscarMat.TabIndex = 2;
+            this.btnBuscarMat.Text = "Buscar";
+            this.btnBuscarMat.Click += new System.EventHandler(this.btnBuscarMat_Click);
+            // 
+            // btnAgregarMat
+            // 
+            this.btnAgregarMat.Location = new System.Drawing.Point(420, 38);
+            this.btnAgregarMat.Name = "btnAgregarMat";
+            this.btnAgregarMat.Size = new System.Drawing.Size(75, 23);
+            this.btnAgregarMat.TabIndex = 3;
+            this.btnAgregarMat.Text = "Agregar";
+            this.btnAgregarMat.Click += new System.EventHandler(this.btnAgregarMat_Click_1);
+            // 
+            // btnEditarMat
+            // 
+            this.btnEditarMat.Location = new System.Drawing.Point(520, 38);
+            this.btnEditarMat.Name = "btnEditarMat";
+            this.btnEditarMat.Size = new System.Drawing.Size(75, 23);
+            this.btnEditarMat.TabIndex = 4;
+            this.btnEditarMat.Text = "Editar";
+            // 
+            // btnEliminarMat
+            // 
+            this.btnEliminarMat.Location = new System.Drawing.Point(620, 38);
+            this.btnEliminarMat.Name = "btnEliminarMat";
+            this.btnEliminarMat.Size = new System.Drawing.Size(75, 23);
+            this.btnEliminarMat.TabIndex = 5;
+            this.btnEliminarMat.Text = "Eliminar";
+            this.btnEliminarMat.Click += new System.EventHandler(this.btnEliminarMat_Click_1);
+            // 
+            // dgvMaterias
+            // 
+            this.dgvMaterias.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvMaterias.Location = new System.Drawing.Point(12, 80);
+            this.dgvMaterias.Name = "dgvMaterias";
+            this.dgvMaterias.Size = new System.Drawing.Size(990, 499);
+            this.dgvMaterias.TabIndex = 12;
             // 
             // pnlAlumnos
             // 
@@ -289,79 +365,6 @@
             this.pnlEditAlumno.TabIndex = 7;
             this.pnlEditAlumno.Visible = false;
             // 
-            // pnlMaterias
-            // 
-            this.pnlMaterias.Controls.Add(this.label1);
-            this.pnlMaterias.Controls.Add(this.txtBuscarMat);
-            this.pnlMaterias.Controls.Add(this.btnBuscarMat);
-            this.pnlMaterias.Controls.Add(this.btnAgregarMat);
-            this.pnlMaterias.Controls.Add(this.btnEditarMat);
-            this.pnlMaterias.Controls.Add(this.btnEliminarMat);
-            this.pnlMaterias.Controls.Add(this.dgvMaterias);
-            this.pnlMaterias.Location = new System.Drawing.Point(422, 25);
-            this.pnlMaterias.Name = "pnlMaterias";
-            this.pnlMaterias.Size = new System.Drawing.Size(264, 134);
-            this.pnlMaterias.TabIndex = 2;
-            this.pnlMaterias.Visible = false;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(157, 19);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Catálogo de Materias";
-            // 
-            // txtBuscarMat
-            // 
-            this.txtBuscarMat.Location = new System.Drawing.Point(12, 40);
-            this.txtBuscarMat.Name = "txtBuscarMat";
-            this.txtBuscarMat.Size = new System.Drawing.Size(300, 25);
-            this.txtBuscarMat.TabIndex = 1;
-            // 
-            // btnBuscarMat
-            // 
-            this.btnBuscarMat.Location = new System.Drawing.Point(320, 38);
-            this.btnBuscarMat.Name = "btnBuscarMat";
-            this.btnBuscarMat.Size = new System.Drawing.Size(90, 30);
-            this.btnBuscarMat.TabIndex = 2;
-            this.btnBuscarMat.Text = "Buscar";
-            // 
-            // btnAgregarMat
-            // 
-            this.btnAgregarMat.Location = new System.Drawing.Point(420, 38);
-            this.btnAgregarMat.Name = "btnAgregarMat";
-            this.btnAgregarMat.Size = new System.Drawing.Size(75, 23);
-            this.btnAgregarMat.TabIndex = 3;
-            this.btnAgregarMat.Text = "Agregar";
-            // 
-            // btnEditarMat
-            // 
-            this.btnEditarMat.Location = new System.Drawing.Point(520, 38);
-            this.btnEditarMat.Name = "btnEditarMat";
-            this.btnEditarMat.Size = new System.Drawing.Size(75, 23);
-            this.btnEditarMat.TabIndex = 4;
-            this.btnEditarMat.Text = "Editar";
-            // 
-            // btnEliminarMat
-            // 
-            this.btnEliminarMat.Location = new System.Drawing.Point(620, 38);
-            this.btnEliminarMat.Name = "btnEliminarMat";
-            this.btnEliminarMat.Size = new System.Drawing.Size(75, 23);
-            this.btnEliminarMat.TabIndex = 5;
-            this.btnEliminarMat.Text = "Eliminar";
-            // 
-            // dgvMaterias
-            // 
-            this.dgvMaterias.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvMaterias.Location = new System.Drawing.Point(12, 80);
-            this.dgvMaterias.Name = "dgvMaterias";
-            this.dgvMaterias.Size = new System.Drawing.Size(1074, 534);
-            this.dgvMaterias.TabIndex = 12;
-            // 
             // pnlHorarios
             // 
             this.pnlHorarios.Controls.Add(this.label2);
@@ -400,6 +403,7 @@
             this.btnBuscarHor.Size = new System.Drawing.Size(90, 30);
             this.btnBuscarHor.TabIndex = 2;
             this.btnBuscarHor.Text = "Buscar";
+            this.btnBuscarHor.Click += new System.EventHandler(this.btnBuscarHor_Click);
             // 
             // btnAgregarHor
             // 
@@ -408,6 +412,7 @@
             this.btnAgregarHor.Size = new System.Drawing.Size(75, 23);
             this.btnAgregarHor.TabIndex = 3;
             this.btnAgregarHor.Text = "Agregar";
+            this.btnAgregarHor.Click += new System.EventHandler(this.btnAgregarHor_Click_1);
             // 
             // btnEditarHor
             // 
@@ -416,6 +421,7 @@
             this.btnEditarHor.Size = new System.Drawing.Size(75, 23);
             this.btnEditarHor.TabIndex = 4;
             this.btnEditarHor.Text = "Editar";
+            this.btnEditarHor.Click += new System.EventHandler(this.btnEditarHor_Click_1);
             // 
             // btnEliminarHor
             // 
@@ -424,6 +430,7 @@
             this.btnEliminarHor.Size = new System.Drawing.Size(75, 23);
             this.btnEliminarHor.TabIndex = 5;
             this.btnEliminarHor.Text = "Eliminar";
+            this.btnEliminarHor.Click += new System.EventHandler(this.btnEliminarHor_Click_1);
             // 
             // dgvHorarios
             // 
@@ -824,12 +831,12 @@
             this.mnuPrincipal.PerformLayout();
             this.pnlContenedor.ResumeLayout(false);
             this.pnlContenedor.PerformLayout();
-            this.pnlAlumnos.ResumeLayout(false);
-            this.pnlAlumnos.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvAlumnos)).EndInit();
             this.pnlMaterias.ResumeLayout(false);
             this.pnlMaterias.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvMaterias)).EndInit();
+            this.pnlAlumnos.ResumeLayout(false);
+            this.pnlAlumnos.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAlumnos)).EndInit();
             this.pnlHorarios.ResumeLayout(false);
             this.pnlHorarios.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHorarios)).EndInit();

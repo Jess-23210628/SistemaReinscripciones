@@ -246,18 +246,320 @@ namespace SistemaReinscripciones
             txtCarreraAl.Text = ""; txtSemestreAl.Text = ""; txtCurpAl.Text = ""; cboPaqueteAl.SelectedIndex = -1;
         }
 
-        // ==================== MATERIAS ====================
-        private void btnBuscarMat_Click(object sender, EventArgs e) => CargarMaterias(txtBuscarMat.Text);
-        private void btnAgregarMat_Click(object sender, EventArgs e) { MessageBox.Show("Función en desarrollo"); }
-        private void btnEditarMat_Click(object sender, EventArgs e) { MessageBox.Show("Función en desarrollo"); }
-        private void btnEliminarMat_Click(object sender, EventArgs e) { MessageBox.Show("Función en desarrollo"); }
+        // ==================== MATERIAS (CRUD completo) ====================
+        private void btnBuscarMat_Click(object sender, EventArgs e)
+        {
+            if (dgvMaterias.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione una materia para editar.");
+                return;
+            }
+            string clave = dgvMaterias.CurrentRow.Cells["Clave_Materia"].Value.ToString();
+            MostrarDialogoMateria(clave);
+        }
 
-        // ==================== HORARIOS ====================
-        private void btnBuscarHor_Click(object sender, EventArgs e) => CargarHorarios(txtBuscarHor.Text);
-        private void btnAgregarHor_Click(object sender, EventArgs e) { MessageBox.Show("Función en desarrollo"); }
-        private void btnEditarHor_Click(object sender, EventArgs e) { MessageBox.Show("Función en desarrollo"); }
-        private void btnEliminarHor_Click(object sender, EventArgs e) { MessageBox.Show("Función en desarrollo"); }
+        private void btnAgregarMat_Click_1(object sender, EventArgs e)
+        {
+            MostrarDialogoMateria(null);
+        }
 
+        private void btnEliminarMat_Click_1(object sender, EventArgs e)
+        {
+            if (dgvMaterias.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione una materia para eliminar.");
+                return;
+            }
+            string clave = dgvMaterias.CurrentRow.Cells["Clave_Materia"].Value.ToString();
+            if (MessageBox.Show($"¿Eliminar materia {clave}?", "Confirmar", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                using (SqlConnection cn = new SqlConnection(cadenaConexion))
+                {
+                    SqlCommand cmd = new SqlCommand("DELETE FROM materias WHERE Clave_Materia = @cla", cn);
+                    cmd.Parameters.AddWithValue("@cla", clave);
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                CargarMaterias(); // Refrescar
+            }
+        }
+  
+        private void MostrarDialogoMateria(string claveExistente)
+        {
+            // Crear un formulario temporal
+            Form frm = new Form();
+            frm.Text = claveExistente == null ? "Nueva Materia" : "Editar Materia";
+            frm.Size = new System.Drawing.Size(400, 350);
+            frm.StartPosition = FormStartPosition.CenterParent;
+
+            // Controles
+            Label lblClave = new Label() { Text = "Clave (5 caracteres):", Location = new System.Drawing.Point(20, 20), AutoSize = true };
+            TextBox txtClave = new TextBox() { Location = new System.Drawing.Point(180, 17), Width = 100 };
+            Label lblNombre = new Label() { Text = "Nombre:", Location = new System.Drawing.Point(20, 60), AutoSize = true };
+            TextBox txtNombre = new TextBox() { Location = new System.Drawing.Point(180, 57), Width = 180 };
+            Label lblCreditos = new Label() { Text = "Créditos:", Location = new System.Drawing.Point(20, 100), AutoSize = true };
+            NumericUpDown nudCreditos = new NumericUpDown() { Location = new System.Drawing.Point(180, 97), Width = 80, Minimum = 1, Maximum = 10 };
+            Label lblPrioridad = new Label() { Text = "Prioridad (1-3):", Location = new System.Drawing.Point(20, 140), AutoSize = true };
+            NumericUpDown nudPrioridad = new NumericUpDown() { Location = new System.Drawing.Point(180, 137), Width = 80, Minimum = 1, Maximum = 3 };
+            Label lblPrereq = new Label() { Text = "Prerequisito:", Location = new System.Drawing.Point(20, 180), AutoSize = true };
+            ComboBox cboPrereq = new ComboBox() { Location = new System.Drawing.Point(180, 177), Width = 180, DropDownStyle = ComboBoxStyle.DropDownList };
+
+            // Cargar combo de prerequisitos
+            DataTable dtMaterias = new DataTable();
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT Clave_Materia, Nombre FROM materias", cn);
+                da.Fill(dtMaterias);
+            }
+            DataRow row = dtMaterias.NewRow();
+            row["Clave_Materia"] = DBNull.Value;
+            row["Nombre"] = "(Ninguno)";
+            dtMaterias.Rows.InsertAt(row, 0);
+            cboPrereq.DataSource = dtMaterias;
+            cboPrereq.DisplayMember = "Nombre";
+            cboPrereq.ValueMember = "Clave_Materia";
+
+            Button btnGuardar = new Button() { Text = "Guardar", Location = new System.Drawing.Point(100, 240), Size = new System.Drawing.Size(80, 30) };
+            Button btnCancelar = new Button() { Text = "Cancelar", Location = new System.Drawing.Point(200, 240), Size = new System.Drawing.Size(80, 30) };
+            btnCancelar.Click += (s, ev) => frm.Close();
+
+            // Si estamos editando, cargar datos
+            if (claveExistente != null)
+            {
+                using (SqlConnection cn = new SqlConnection(cadenaConexion))
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT Nombre, Creditos, Prioridad, Prerequisito FROM materias WHERE Clave_Materia = @cla", cn);
+                    cmd.Parameters.AddWithValue("@cla", claveExistente);
+                    cn.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        txtClave.Text = claveExistente;
+                        txtClave.ReadOnly = true;
+                        txtNombre.Text = dr["Nombre"].ToString();
+                        nudCreditos.Value = Convert.ToDecimal(dr["Creditos"]);
+                        nudPrioridad.Value = Convert.ToDecimal(dr["Prioridad"]);
+                        object prereq = dr["Prerequisito"];
+                        if (prereq != DBNull.Value)
+                            cboPrereq.SelectedValue = prereq.ToString();
+                        else
+                            cboPrereq.SelectedIndex = 0;
+                    }
+                    dr.Close();
+                }
+            }
+            else
+            {
+                txtClave.ReadOnly = false;
+            }
+
+            btnGuardar.Click += (s, ev) =>
+            {
+                if (string.IsNullOrWhiteSpace(txtClave.Text) || string.IsNullOrWhiteSpace(txtNombre.Text))
+                {
+                    MessageBox.Show("Clave y nombre son obligatorios.");
+                    return;
+                }
+                if (txtClave.Text.Length != 5)
+                {
+                    MessageBox.Show("La clave debe tener exactamente 5 caracteres.");
+                    return;
+                }
+                using (SqlConnection cn = new SqlConnection(cadenaConexion))
+                {
+                    cn.Open();
+                    SqlCommand cmd;
+                    if (claveExistente != null)
+                    {
+                        cmd = new SqlCommand("UPDATE materias SET Nombre=@nom, Creditos=@cred, Prioridad=@pri, Prerequisito=@pre WHERE Clave_Materia=@cla", cn);
+                        cmd.Parameters.AddWithValue("@cla", claveExistente);
+                    }
+                    else
+                    {
+                        cmd = new SqlCommand("INSERT INTO materias (Clave_Materia, Nombre, Creditos, Prioridad, Prerequisito) VALUES (@cla, @nom, @cred, @pri, @pre)", cn);
+                        cmd.Parameters.AddWithValue("@cla", txtClave.Text);
+                    }
+                    cmd.Parameters.AddWithValue("@nom", txtNombre.Text);
+                    cmd.Parameters.AddWithValue("@cred", (int)nudCreditos.Value);
+                    cmd.Parameters.AddWithValue("@pri", (int)nudPrioridad.Value);
+                    object prereqVal = cboPrereq.SelectedValue;
+                    cmd.Parameters.AddWithValue("@pre", (prereqVal == DBNull.Value || prereqVal == null) ? DBNull.Value : prereqVal);
+                    cmd.ExecuteNonQuery();
+                }
+                CargarMaterias();
+                frm.Close();
+            };
+
+            frm.Controls.AddRange(new Control[] { lblClave, txtClave, lblNombre, txtNombre, lblCreditos, nudCreditos,
+                                          lblPrioridad, nudPrioridad, lblPrereq, cboPrereq, btnGuardar, btnCancelar });
+            frm.ShowDialog(this);
+        }
+        // ==================== HORARIOS (CRUD completo) ====================
+        private void btnBuscarHor_Click(object sender, EventArgs e)
+        {
+            CargarHorarios(txtBuscarHor.Text);
+        }
+
+        private void btnAgregarHor_Click_1(object sender, EventArgs e)
+        {
+            MostrarDialogoHorario(null);
+        }
+
+        private void btnEditarHor_Click_1(object sender, EventArgs e)
+        {
+            if (dgvHorarios.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione un horario para editar.");
+                return;
+            }
+            string claveHor = dgvHorarios.CurrentRow.Cells["Clave_Horario"].Value.ToString();
+            MostrarDialogoHorario(claveHor);
+        }
+
+        private void btnEliminarHor_Click_1(object sender, EventArgs e)
+        {
+            if (dgvHorarios.CurrentRow == null)
+            {
+                MessageBox.Show("Seleccione un horario para eliminar.");
+                return;
+            }
+            string claveHor = dgvHorarios.CurrentRow.Cells["Clave_Horario"].Value.ToString();
+            if (MessageBox.Show($"¿Eliminar horario {claveHor}?", "Confirmar", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                using (SqlConnection cn = new SqlConnection(cadenaConexion))
+                {
+                    SqlCommand cmd = new SqlCommand("DELETE FROM horaMaterias WHERE Clave_Horario = @cla", cn);
+                    cmd.Parameters.AddWithValue("@cla", claveHor);
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+                CargarHorarios();
+            }
+        }
+
+
+        private void MostrarDialogoHorario(string claveExistente)
+        {
+            Form frm = new Form();
+            frm.Text = claveExistente == null ? "Nuevo Horario" : "Editar Horario";
+            frm.Size = new System.Drawing.Size(500, 400);
+            frm.StartPosition = FormStartPosition.CenterParent;
+
+            Label lblClave = new Label() { Text = "Clave Horario (5 chars):", Location = new System.Drawing.Point(20, 20), AutoSize = true };
+            TextBox txtClave = new TextBox() { Location = new System.Drawing.Point(200, 17), Width = 100 };
+            Label lblMateria = new Label() { Text = "Materia:", Location = new System.Drawing.Point(20, 60), AutoSize = true };
+            ComboBox cboMateria = new ComboBox() { Location = new System.Drawing.Point(200, 57), Width = 200, DropDownStyle = ComboBoxStyle.DropDownList };
+
+            // Cargar materias
+            DataTable dtMaterias = new DataTable();
+            using (SqlConnection cn = new SqlConnection(cadenaConexion))
+            {
+                SqlDataAdapter da = new SqlDataAdapter("SELECT Clave_Materia, Nombre FROM materias", cn);
+                da.Fill(dtMaterias);
+            }
+            cboMateria.DataSource = dtMaterias;
+            cboMateria.DisplayMember = "Nombre";
+            cboMateria.ValueMember = "Clave_Materia";
+
+            // Días de la semana
+            CheckBox[] chkDias = new CheckBox[5];
+            DateTimePicker[] dtpDias = new DateTimePicker[5];
+            string[] dias = { "Lunes", "Martes", "Miércoles", "Jueves", "Viernes" };
+            int y = 110;
+            for (int i = 0; i < 5; i++)
+            {
+                chkDias[i] = new CheckBox() { Text = dias[i], Location = new System.Drawing.Point(20, y), AutoSize = true };
+                dtpDias[i] = new DateTimePicker() { Location = new System.Drawing.Point(150, y - 3), Format = DateTimePickerFormat.Time, ShowUpDown = true, Width = 100, Enabled = false };
+                int idx = i; // variable local para el evento
+                chkDias[i].CheckedChanged += (s, ev) => dtpDias[idx].Enabled = chkDias[idx].Checked;
+                frm.Controls.Add(chkDias[i]);
+                frm.Controls.Add(dtpDias[i]);
+                y += 40;
+            }
+
+            Button btnGuardar = new Button() { Text = "Guardar", Location = new System.Drawing.Point(120, 310), Size = new System.Drawing.Size(80, 30) };
+            Button btnCancelar = new Button() { Text = "Cancelar", Location = new System.Drawing.Point(230, 310), Size = new System.Drawing.Size(80, 30) };
+            btnCancelar.Click += (s, ev) => frm.Close();
+
+            // Si es edición, cargar datos
+            if (claveExistente != null)
+            {
+                using (SqlConnection cn = new SqlConnection(cadenaConexion))
+                {
+                    SqlCommand cmd = new SqlCommand("SELECT Clave_Materia, Hor_lun, Hor_mar, Hor_mie, Hor_jue, Hor_vie FROM horaMaterias WHERE Clave_Horario = @cla", cn);
+                    cmd.Parameters.AddWithValue("@cla", claveExistente);
+                    cn.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        txtClave.Text = claveExistente;
+                        txtClave.ReadOnly = true;
+                        cboMateria.SelectedValue = dr["Clave_Materia"].ToString();
+                        // Horas
+                        TimeSpan?[] horas = new TimeSpan?[5];
+                        horas[0] = dr["Hor_lun"] as TimeSpan?;
+                        horas[1] = dr["Hor_mar"] as TimeSpan?;
+                        horas[2] = dr["Hor_mie"] as TimeSpan?;
+                        horas[3] = dr["Hor_jue"] as TimeSpan?;
+                        horas[4] = dr["Hor_vie"] as TimeSpan?;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (horas[i].HasValue)
+                            {
+                                chkDias[i].Checked = true;
+                                dtpDias[i].Value = DateTime.Today.Add(horas[i].Value);
+                            }
+                            else
+                            {
+                                chkDias[i].Checked = false;
+                            }
+                        }
+                    }
+                    dr.Close();
+                }
+            }
+            else
+            {
+                txtClave.ReadOnly = false;
+            }
+
+            btnGuardar.Click += (s, ev) =>
+            {
+                if (string.IsNullOrWhiteSpace(txtClave.Text) || txtClave.Text.Length != 5)
+                {
+                    MessageBox.Show("La clave debe tener 5 caracteres.");
+                    return;
+                }
+                if (cboMateria.SelectedValue == null)
+                {
+                    MessageBox.Show("Seleccione una materia.");
+                    return;
+                }
+                using (SqlConnection cn = new SqlConnection(cadenaConexion))
+                {
+                    cn.Open();
+                    SqlCommand cmd;
+                    if (claveExistente != null)
+                        cmd = new SqlCommand("UPDATE horaMaterias SET Clave_Materia=@mat, Hor_lun=@lun, Hor_mar=@mar, Hor_mie=@mie, Hor_jue=@jue, Hor_vie=@vie WHERE Clave_Horario=@cla", cn);
+                    else
+                        cmd = new SqlCommand("INSERT INTO horaMaterias (Clave_Horario, Clave_Materia, Hor_lun, Hor_mar, Hor_mie, Hor_jue, Hor_vie) VALUES (@cla, @mat, @lun, @mar, @mie, @jue, @vie)", cn);
+
+                    cmd.Parameters.AddWithValue("@cla", txtClave.Text);
+                    cmd.Parameters.AddWithValue("@mat", cboMateria.SelectedValue);
+                    cmd.Parameters.AddWithValue("@lun", chkDias[0].Checked ? (object)dtpDias[0].Value.TimeOfDay : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@mar", chkDias[1].Checked ? (object)dtpDias[1].Value.TimeOfDay : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@mie", chkDias[2].Checked ? (object)dtpDias[2].Value.TimeOfDay : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@jue", chkDias[3].Checked ? (object)dtpDias[3].Value.TimeOfDay : DBNull.Value);
+                    cmd.Parameters.AddWithValue("@vie", chkDias[4].Checked ? (object)dtpDias[4].Value.TimeOfDay : DBNull.Value);
+                    cmd.ExecuteNonQuery();
+                }
+                CargarHorarios();
+                frm.Close();
+            };
+
+            frm.Controls.AddRange(new Control[] { lblClave, txtClave, lblMateria, cboMateria, btnGuardar, btnCancelar });
+            frm.ShowDialog(this);
+        }
         // ==================== REINSCRIPCIÓN ====================
         private void mnuReinscripcion_Click(object sender, EventArgs e)
         {
@@ -469,5 +771,6 @@ namespace SistemaReinscripciones
             CargarPaquetesAlumno(numCtrl);
             MessageBox.Show("Paquetes generados correctamente");
         }
+
     }
 }
