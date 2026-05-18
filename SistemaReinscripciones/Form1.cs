@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace SistemaReinscripciones
@@ -22,6 +23,8 @@ namespace SistemaReinscripciones
 
         private void FrmPrincipal_Load(object sender, EventArgs e)
         {
+            AplicarEstiloTeal();
+
             CargarAlumnos();
             CargarMaterias();
             CargarHorarios();
@@ -770,6 +773,75 @@ namespace SistemaReinscripciones
             }
             CargarPaquetesAlumno(numCtrl);
             MessageBox.Show("Paquetes generados correctamente");
+        }
+
+        private void AplicarEstiloTeal()
+        {
+            // MenuStrip
+            mnuPrincipal.BackColor = Color.FromArgb(0, 109, 109); // #006D6D
+            mnuPrincipal.ForeColor = Color.White;
+            foreach (ToolStripMenuItem item in mnuPrincipal.Items)
+            {
+                item.BackColor = Color.FromArgb(0, 109, 109);
+                item.ForeColor = Color.White;
+            }
+
+            // Paneles de contenido (todos)
+            Panel[] paneles = { pnlAlumnos, pnlMaterias, pnlHorarios, pnlReinscripcion,
+                        pnlPaquetes, pnlCalificaciones, pnlConsultas };
+            foreach (Panel p in paneles)
+            {
+                if (p != null) p.BackColor = Color.FromArgb(245, 247, 250); // #F5F7FA
+            }
+
+            // Botones (estilo plano)
+            Button[] botones = { btnBuscarAl, btnAgregarAl, btnEditar, btnEliminar,
+                         btnBuscarMat, btnAgregarMat, btnEditarMat, btnEliminarMat,
+                         btnBuscarHor, btnAgregarHor, btnEditarHor, btnEliminarHor,
+                         btnGenPaq, btnAsignarPaq, btnGuardarCalif, btnEjecutarCon };
+            foreach (Button btn in botones)
+            {
+                if (btn != null)
+                {
+                    btn.FlatStyle = FlatStyle.Flat;
+                    btn.FlatAppearance.BorderSize = 0;
+                    btn.BackColor = Color.FromArgb(0, 128, 128); // Teal
+                    btn.ForeColor = Color.White;
+                    btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 90, 90);
+                    // Para botones de cancelar/eliminar (si quieres excepción)
+                    if (btn.Text == "Eliminar" || btn.Text == "Cancelar")
+                    {
+                        btn.BackColor = Color.FromArgb(117, 117, 117); // Gris
+                        btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(97, 97, 97);
+                    }
+                }
+            }
+
+            // DataGridView
+            foreach (DataGridView dgv in new DataGridView[] { dgvAlumnos, dgvMaterias, dgvHorarios,
+                                                      dgvPaqRein, dgvMatPaqRein, dgvPaqLista,
+                                                      dgvMatPaqDet, dgvHistCalif, dgvResultCon })
+            {
+                if (dgv != null)
+                {
+                    dgv.BackgroundColor = Color.White;
+                    dgv.GridColor = Color.FromArgb(200, 200, 200);
+                    dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(224, 242, 241);
+                    dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(0, 77, 77);
+                    dgv.EnableHeadersVisualStyles = false;
+                    dgv.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(240, 244, 248);
+                    dgv.RowsDefaultCellStyle.BackColor = Color.White;
+                    dgv.RowsDefaultCellStyle.ForeColor = Color.Black;
+                    dgv.RowsDefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 128, 128);
+                    dgv.RowsDefaultCellStyle.SelectionForeColor = Color.White;
+                    dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+                }
+            }
+
+            // StatusStrip
+            statusStrip1.BackColor = Color.FromArgb(0, 109, 109);
+            statusStrip1.ForeColor = Color.White;
+            tslInfo.ForeColor = Color.White;
         }
 
     }
