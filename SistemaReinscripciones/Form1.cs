@@ -9,7 +9,8 @@ namespace SistemaReinscripciones
     public partial class FrmPrincipal : Form
     {
         // Cambia la cadena de conexión según tu servidor y credenciales
-        private string cadenaConexion = "Server=192.168.0.78;Database=Proyecto_Final_Horarios;User Id=sa;Password=MyP@ssw0rd2026!;";
+        private string cadenaConexion = "Server=100.88.175.118;Database=Proyecto_Final_Horarios;" +
+            "User Id=sa;Password=MyP@ssw0rd2026!;";
 
         public FrmPrincipal()
         {
@@ -88,7 +89,7 @@ namespace SistemaReinscripciones
             }
         }
 
-        // ==================== CARGA DE DATOS ====================
+        // ==================== CARGA DE DATOS ====================//
         private void CargarAlumnos(string filtro = "")
         {
             string query = "SELECT Num_control, Nombre, Apellido_Paterno, Apellido_Materno, Carrera, Semestre, Curp, Clave_Paquete FROM alumnos";
@@ -175,27 +176,61 @@ namespace SistemaReinscripciones
             if (cboPaqueteAl != null) { cboPaqueteAl.DataSource = dt; cboPaqueteAl.DisplayMember = "Clave_Paquete"; cboPaqueteAl.ValueMember = "Clave_Paquete"; }
         }
 
-        // ==================== ALUMNOS CRUD ====================
-        private void btnBuscarAl_Click(object sender, EventArgs e) { CargarAlumnos(txtBuscarAl.Text); pnlEditAlumno.Visible = false; }
-        private void btnAgregarAl_Click(object sender, EventArgs e) { LimpiarCamposAlumno(); pnlEditAlumno.Visible = true; pnlEditAlumno.BringToFront(); txtNumCtrlAl.ReadOnly = false; txtNumCtrlAl.Focus(); }
-        private void btnEditar_Click(object sender, EventArgs e)
+        // ==================== ALUMNOS EDITAR ====================//
+        private void btnAgregarAl_Click(object sender, EventArgs e)
         {
             if (dgvAlumnos.CurrentRow == null) return;
             DataRowView row = (DataRowView)dgvAlumnos.CurrentRow.DataBoundItem;
-            txtNumCtrlAl.Text = row["Num_control"].ToString();
-            txtNombreAl.Text = row["Nombre"].ToString();
-            txtApPatAl.Text = row["Apellido_Paterno"].ToString();
-            txtApMatAl.Text = row["Apellido_Materno"].ToString();
-            txtCarreraAl.Text = row["Carrera"].ToString();
-            txtSemestreAl.Text = row["Semestre"].ToString();
-            txtCurpAl.Text = row["Curp"].ToString();
+            txtNumCtrlA.Text = row["Num_control"].ToString();
+            txtNombreA.Text = row["Nombre"].ToString();
+            txtApPatA.Text = row["Apellido_Paterno"].ToString();
+            txtApMatA.Text = row["Apellido_Materno"].ToString();
+            txtCarreraA.Text = row["Carrera"].ToString();
+            txtSemestreA.Text = row["Semestre"].ToString();
+            txtCurpA.Text = row["Curp"].ToString();
             if (row["Clave_Paquete"] != DBNull.Value) cboPaqueteAl.SelectedValue = row["Clave_Paquete"].ToString();
             else cboPaqueteAl.SelectedIndex = -1;
-            txtNumCtrlAl.ReadOnly = true;
-            pnlEditAlumno.Visible = true; pnlEditAlumno.BringToFront();
+            txtNumCtrlA.ReadOnly = true;
+
         }
-        private void btnEliminar_Click(object sender, EventArgs e)
+
+        private void btnLimpiar_Click(object sender, EventArgs e)
         {
+            foreach (Control control in this.Controls)
+              if (control is TextBox)
+              { 
+                    control.Text="";
+              }
+        }
+
+
+
+
+
+        // ==================== ALUMNOS CRUD ====================
+        private void btnAgregarAl_Click_1(object sender, EventArgs e)
+        {
+             LimpiarCamposAlumno(); pnlEditAlumno.Visible = true; pnlEditAlumno.BringToFront();
+            txtNumCtrlA.ReadOnly = false; txtNumCtrlA.Focus(); 
+        }
+
+        //=========Editar Alumno=============//
+
+        private void btnEditar_Click_1(object sender, EventArgs e)
+        {
+            pnlEditAlumno.Visible = true; pnlEditAlumno.BringToFront();
+            
+           
+        }
+
+        private void btnBuscarAl_Click_1(object sender, EventArgs e)
+        {
+            CargarAlumnos(txtBuscarAl.Text); pnlEditAlumno.Visible = false;
+        }
+
+        private void btnEliminar_Click_1(object sender, EventArgs e)
+        {
+
             if (dgvAlumnos.CurrentRow == null) return;
             string numCtrl = dgvAlumnos.CurrentRow.Cells["Num_control"].Value.ToString();
             if (MessageBox.Show("¿Eliminar alumno " + numCtrl + "?", "Confirmar", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -209,6 +244,7 @@ namespace SistemaReinscripciones
                 CargarAlumnos(); pnlEditAlumno.Visible = false;
             }
         }
+        
         private void btnGuardarAl_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtNumCtrlAl.Text) || string.IsNullOrWhiteSpace(txtNombreAl.Text))
@@ -617,7 +653,7 @@ namespace SistemaReinscripciones
             CargarAlumnos();
         }
 
-        // ==================== CALIFICACIONES ====================
+        // ==================== CALIFICACIONES ====================//
         private void mnuCalificacion_Click(object sender, EventArgs e)
         {
             MostrarPanel(pnlCalificaciones);
@@ -638,7 +674,7 @@ namespace SistemaReinscripciones
             }
             dgvHistCalif.DataSource = dt;
         }
-        private void btnGuardarCalif_Click(object sender, EventArgs e)
+        private void btnGuardarCalif_Click_1(object sender, EventArgs e)
         {
             if (cmbAlumCalif.SelectedValue == null || cmbMatCalif.SelectedValue == null)
             { MessageBox.Show("Seleccione alumno y materia"); return; }
@@ -663,14 +699,16 @@ namespace SistemaReinscripciones
             MessageBox.Show("Calificación guardada");
         }
 
-        // ==================== CONSULTAS ====================
+        // ==================== CONSULTAS ====================//
+
         private void mnuConsulta_Click(object sender, EventArgs e)
         {
             MostrarPanel(pnlConsultas);
             if (cboConsultaTipo.Items.Count == 0) InicializarCombos();
         }
-        private void btnEjecutarCon_Click(object sender, EventArgs e)
+        private void btnEjecutarCon_Click_1(object sender, EventArgs e)
         {
+
             if (cboConsultaTipo.SelectedIndex == -1) return;
             DataTable dt = new DataTable();
             string consulta = "";
@@ -698,9 +736,14 @@ namespace SistemaReinscripciones
                 }
                 dgvResultCon.DataSource = dt;
             }
-        }
 
-        // ==================== PAQUETES (CONSULTA) ====================
+        }
+       
+       
+
+        // ==================== PAQUETES (CONSULTA) ====================//
+
+        
         private void mnuPaquetes_Click(object sender, EventArgs e)
         {
             MostrarPanel(pnlPaquetes);
@@ -735,12 +778,18 @@ namespace SistemaReinscripciones
             dgvMatPaqDet.DataSource = dt;
         }
 
-        // ==================== MENÚS ====================
+        // ==================== MENÚS ====================//
         private void mnuAlumnos_Click(object sender, EventArgs e) => MostrarPanel(pnlAlumnos);
         private void mnuMaterias_Click(object sender, EventArgs e) => MostrarPanel(pnlMaterias);
         private void mnuHorarios_Click(object sender, EventArgs e) => MostrarPanel(pnlHorarios);
         private void mnuSalir_Click(object sender, EventArgs e) => Application.Exit();
 
+        //=================REINSCRIPCIÓN - GENERAR PAQUETES============//
+
+        private void btnAsignarPaq_Click_1(object sender, EventArgs e)
+        {
+
+        }
         private void btnGenPaq_Click(object sender, EventArgs e)
         {
             if (cmbAlumRein.SelectedValue == null) { MessageBox.Show("Seleccione un alumno"); return; }
@@ -775,6 +824,11 @@ namespace SistemaReinscripciones
             MessageBox.Show("Paquetes generados correctamente");
         }
 
+
+
+
+       // ============= DISEÑO ======================//
+
         private void AplicarEstiloTeal()
         {
             // MenuStrip
@@ -788,7 +842,7 @@ namespace SistemaReinscripciones
 
             // Paneles de contenido (todos)
             Panel[] paneles = { pnlAlumnos, pnlMaterias, pnlHorarios, pnlReinscripcion,
-                        pnlPaquetes, pnlCalificaciones, pnlConsultas };
+                        pnlPaquetes, pnlCalificaciones, pnlConsultas, pnlEditAlumno,};
             foreach (Panel p in paneles)
             {
                 if (p != null) p.BackColor = Color.FromArgb(245, 247, 250); // #F5F7FA
@@ -798,7 +852,7 @@ namespace SistemaReinscripciones
             Button[] botones = { btnBuscarAl, btnAgregarAl, btnEditar, btnEliminar,
                          btnBuscarMat, btnAgregarMat, btnEditarMat, btnEliminarMat,
                          btnBuscarHor, btnAgregarHor, btnEditarHor, btnEliminarHor,
-                         btnGenPaq, btnAsignarPaq, btnGuardarCalif, btnEjecutarCon };
+                         btnGenPaq, btnAsignarPaq, btnGuardarCalif, btnEjecutarCon,btnGuardarAl};
             foreach (Button btn in botones)
             {
                 if (btn != null)
@@ -844,5 +898,9 @@ namespace SistemaReinscripciones
             tslInfo.ForeColor = Color.White;
         }
 
+        private void btnEditarMat_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
