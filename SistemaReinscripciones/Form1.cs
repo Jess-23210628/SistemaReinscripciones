@@ -197,10 +197,10 @@ namespace SistemaReinscripciones
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             foreach (Control control in this.Controls)
-              if (control is TextBox)
-              { 
-                    control.Text="";
-              }
+                if (control is TextBox)
+                {
+                    control.Text = "";
+                }
         }
 
 
@@ -210,8 +210,8 @@ namespace SistemaReinscripciones
         // ==================== ALUMNOS CRUD ====================
         private void btnAgregarAl_Click_1(object sender, EventArgs e)
         {
-             LimpiarCamposAlumno(); pnlEditAlumno.Visible = true; pnlEditAlumno.BringToFront();
-            txtNumCtrlA.ReadOnly = false; txtNumCtrlA.Focus(); 
+            LimpiarCamposAlumno(); pnlEditAlumno.Visible = true; pnlEditAlumno.BringToFront();
+            txtNumCtrlA.ReadOnly = false; txtNumCtrlA.Focus();
         }
 
         //=========Editar Alumno=============//
@@ -219,8 +219,8 @@ namespace SistemaReinscripciones
         private void btnEditar_Click_1(object sender, EventArgs e)
         {
             pnlEditAlumno.Visible = true; pnlEditAlumno.BringToFront();
-            
-           
+
+
         }
 
         private void btnBuscarAl_Click_1(object sender, EventArgs e)
@@ -244,7 +244,7 @@ namespace SistemaReinscripciones
                 CargarAlumnos(); pnlEditAlumno.Visible = false;
             }
         }
-        
+
         private void btnGuardarAl_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtNumCtrlAl.Text) || string.IsNullOrWhiteSpace(txtNombreAl.Text))
@@ -738,12 +738,12 @@ namespace SistemaReinscripciones
             }
 
         }
-       
-       
+
+
 
         // ==================== PAQUETES (CONSULTA) ====================//
 
-        
+
         private void mnuPaquetes_Click(object sender, EventArgs e)
         {
             MostrarPanel(pnlPaquetes);
@@ -827,7 +827,7 @@ namespace SistemaReinscripciones
 
 
 
-       // ============= DISEÑO ======================//
+        // ============= DISEÑO ======================//
 
         private void AplicarEstiloTeal()
         {
