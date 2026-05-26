@@ -12,6 +12,18 @@ namespace SistemaReinscripciones
             base.Dispose(disposing);
         }
 
+        // Helper used by InitializeComponent. Kept as a class method so the WinForms
+        // designer can parse the generated code (local functions inside
+        // InitializeComponent are not supported by the designer parser).
+        private void ConfigureMenuItem(System.Windows.Forms.ToolStripMenuItem it, string txt, System.EventHandler handler)
+        {
+            it.Text = txt;
+            it.ForeColor = System.Drawing.Color.White;
+            it.BackColor = System.Drawing.Color.FromArgb(0, 109, 109);
+            it.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            it.Click += handler;
+        }
+
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -40,20 +52,11 @@ namespace SistemaReinscripciones
                 this.mnuCalificaciones, this.mnuReportesMaestro });
             this.menuStrip1.Size = new System.Drawing.Size(1100, 28);
 
-            void Item(System.Windows.Forms.ToolStripMenuItem it, string txt,
-                      System.EventHandler handler)
-            {
-                it.Text = txt;
-                it.ForeColor = System.Drawing.Color.White;
-                it.BackColor = System.Drawing.Color.FromArgb(0, 109, 109);
-                it.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-                it.Click += handler;
-            }
-
-            Item(mnuMiHorario, "MI HORARIO", mnuMiHorario_Click);
-            Item(mnuMisGrupos, "MIS GRUPOS", mnuMisGrupos_Click);
-            Item(mnuCalificaciones, "CALIFICACIONES", mnuCalificaciones_Click);
-            Item(mnuReportesMaestro, "REPORTES", mnuReportesMaestro_Click);
+            // Configure menu items
+            ConfigureMenuItem(mnuMiHorario, "MI HORARIO", mnuMiHorario_Click);
+            ConfigureMenuItem(mnuMisGrupos, "MIS GRUPOS", mnuMisGrupos_Click);
+            ConfigureMenuItem(mnuCalificaciones, "CALIFICACIONES", mnuCalificaciones_Click);
+            ConfigureMenuItem(mnuReportesMaestro, "REPORTES", mnuReportesMaestro_Click);
 
             // ── pnlHeader ─────────────────────────────────────────────────────
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;

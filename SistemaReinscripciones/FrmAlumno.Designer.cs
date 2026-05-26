@@ -12,6 +12,18 @@ namespace SistemaReinscripciones
             base.Dispose(disposing);
         }
 
+        // Helper used by InitializeComponent. Kept as a class method so the WinForms
+        // designer can parse the generated code (local functions inside
+        // InitializeComponent are not supported by the designer parser).
+        private void ConfigureMenuItem(System.Windows.Forms.ToolStripMenuItem it, string txt, System.EventHandler handler)
+        {
+            it.Text = txt;
+            it.ForeColor = System.Drawing.Color.White;
+            it.BackColor = System.Drawing.Color.FromArgb(0, 109, 109);
+            it.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
+            it.Click += handler;
+        }
+
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -41,21 +53,12 @@ namespace SistemaReinscripciones
                 this.mnuHistorial, this.mnuMisPaquetes, this.mnuReporteAl });
             this.menuStrip1.Size = new System.Drawing.Size(1100, 28);
 
-            void Item(System.Windows.Forms.ToolStripMenuItem it, string txt,
-                      System.EventHandler handler)
-            {
-                it.Text = txt;
-                it.ForeColor = System.Drawing.Color.White;
-                it.BackColor = System.Drawing.Color.FromArgb(0, 109, 109);
-                it.Padding = new System.Windows.Forms.Padding(10, 0, 10, 0);
-                it.Click += handler;
-            }
-
-            Item(mnuMiHorarioAl, "MI HORARIO", mnuMiHorarioAl_Click);
-            Item(mnuMisCalifs, "CALIFICACIONES", mnuMisCalifs_Click);
-            Item(mnuHistorial, "HISTORIAL", mnuHistorial_Click);
-            Item(mnuMisPaquetes, "MIS PAQUETES", mnuMisPaquetes_Click);
-            Item(mnuReporteAl, "REPORTE PDF", mnuReporteAl_Click);
+            // Configure menu items
+            ConfigureMenuItem(mnuMiHorarioAl, "MI HORARIO", mnuMiHorarioAl_Click);
+            ConfigureMenuItem(mnuMisCalifs, "CALIFICACIONES", mnuMisCalifs_Click);
+            ConfigureMenuItem(mnuHistorial, "HISTORIAL", mnuHistorial_Click);
+            ConfigureMenuItem(mnuMisPaquetes, "MIS PAQUETES", mnuMisPaquetes_Click);
+            ConfigureMenuItem(mnuReporteAl, "REPORTE PDF", mnuReporteAl_Click);
 
             // ── pnlHeader ─────────────────────────────────────────────────────
             this.pnlHeader.Dock = System.Windows.Forms.DockStyle.Top;

@@ -16,7 +16,6 @@ namespace SistemaReinscripciones
         private readonly string _conn;
         private readonly string _username;
 
-        // UserControls cargados una sola vez (lazy)
         private UcAlumnos _ucAlumnos;
         private UcMaterias _ucMaterias;
         private UcHorarios _ucHorarios;
@@ -43,7 +42,7 @@ namespace SistemaReinscripciones
             CargarControl(ObtenerUc<UcAlumnos>(ref _ucAlumnos));
         }
 
-        // ── Menú handlers ─────────────────────────────────────────────────────
+        // ── Menu handlers ─────────────────────────────────────────────────────
         private void alumnosToolStripMenuItem_Click(object sender, EventArgs e)
             => CargarControl(ObtenerUc<UcAlumnos>(ref _ucAlumnos));
 
@@ -74,7 +73,7 @@ namespace SistemaReinscripciones
             tslStatus.Text = uc.Tag?.ToString() ?? "Listo";
         }
 
-        // ── Lazy init: crea el UC solo la primera vez ─────────────────────────
+        // ── crea el UC solo la primera vez ─────────────────────────
         private T ObtenerUc<T>(ref T campo) where T : UserControl, new()
         {
             if (campo == null)

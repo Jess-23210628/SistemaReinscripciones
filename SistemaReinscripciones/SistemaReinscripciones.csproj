@@ -95,9 +95,6 @@
     <Compile Include="Usercontrols.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Usercontrols.Designer.cs">
-      <DependentUpon>Usercontrols.cs</DependentUpon>
-    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

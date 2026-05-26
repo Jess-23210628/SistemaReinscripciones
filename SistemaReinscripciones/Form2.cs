@@ -90,7 +90,7 @@ namespace SistemaReinscripciones
                 return;
             }
 
-            // ── CONSULTA SIN HASH (COMPARA TEXTO PLANO) ───────────────────
+            // ── CONSULTA SIN HASH ───────────────────
             try
             {
                 using (SqlConnection cn = new SqlConnection(_conn))
@@ -166,15 +166,14 @@ namespace SistemaReinscripciones
             frm.Show();
             this.Hide();
 
-            // Al cerrar cualquier Form, cerrar la app completa
             frm.FormClosed += (s, e) =>
             {
-                RegistrarBitacoraFallido(username, rol); // reutilizamos para logout
+                RegistrarBitacoraFallido(username, rol);
                 Application.Exit();
             };
         }
 
-        // ── Combo de rol (ya lo tenías vacío, aquí solo lo dejamos) ──────────
+        // ── Combo de rol ──────────
         private void cmbRol_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Cambiar el placeholder del usuario según el rol seleccionado
