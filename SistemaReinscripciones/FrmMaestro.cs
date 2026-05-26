@@ -95,5 +95,10 @@ namespace SistemaReinscripciones
             }
             return campo;
         }
+
+        private void lblInfoMaestro_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

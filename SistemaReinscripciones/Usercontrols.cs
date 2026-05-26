@@ -20,6 +20,28 @@ namespace SistemaReinscripciones
         private TextBox txtBuscar;
         private Button btnBuscar, btnNuevo, btnEditar, btnEliminar;
 
+        private void InitializeComponent()
+        {
+            this.pnlTop.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // pnlTop
+            // 
+            this.pnlTop.Size = new System.Drawing.Size(1313, 48);
+            // 
+            // pnlBody
+            // 
+            this.pnlBody.Size = new System.Drawing.Size(1313, 714);
+            // 
+            // UcAlumnos
+            // 
+            this.Name = "UcAlumnos";
+            this.Size = new System.Drawing.Size(1313, 762);
+            this.pnlTop.ResumeLayout(false);
+            this.ResumeLayout(false);
+
+        }
+
         public override void Inicializar()
         {
             this.Tag = "Gestión de alumnos";

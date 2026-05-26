@@ -90,5 +90,15 @@ namespace SistemaReinscripciones
             }
             return campo;
         }
+
+        private void iNICIOToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 login = new Form2();
+            login.Show();
+            
+
+        }
+
+        // Nota: los estilos de los ToolStripMenuItem se aplican ahora directamente en el Designer.
     }
 }
