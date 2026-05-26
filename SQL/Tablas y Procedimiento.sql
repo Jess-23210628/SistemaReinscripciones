@@ -1,4 +1,4 @@
-﻿CREATE DATABASE Proyecto_Final_Horarios;
+CREATE DATABASE Proyecto_Final_Horarios;
 GO
 
 USE Proyecto_Final_Horarios;
@@ -13,7 +13,6 @@ CREATE TABLE [dbo].[materias](
 
 );
 GO
-
 
 -- Desglose de calificaciones
 CREATE TABLE detalle_calificaciones (
@@ -47,7 +46,6 @@ CREATE TABLE [dbo].[horaMaterias](
         FOREIGN KEY (Clave_Materia) REFERENCES dbo.materias(Clave_Materia)
 );
 GO
-
 
 
 CREATE TABLE [dbo].[paquetes] (
@@ -252,6 +250,57 @@ BEGIN
         DEALLOCATE cur;
 
         SET @i = @i + 1;
+    END
+END;
+GO
+
+-- Procedimiento: AsignarMaestroAHorario
+-- Si la asignación ya existe, no la duplica 
+CREATE PROCEDURE dbo.AsignarMaestroAHorario
+    @Num_empleado   VARCHAR(10),   -- Clave del maestro
+    @Clave_Horario  CHAR(5),       -- Clave del horario (grupo)
+    @Periodo        VARCHAR(20),   -- Ej. 'Enero-Junio 2025'
+    @Anio           INT,           -- Año académico
+    @Sobrescribir   BIT = 0        -- Si 1, actualiza periodo/año si ya existe; si 0, no hace nada si ya existe
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Validar que el maestro exista y esté activo
+    IF NOT EXISTS (SELECT 1 FROM maestros WHERE Num_empleado = @Num_empleado AND Activo = 1)
+    BEGIN
+        RAISERROR('El maestro no existe o está inactivo.', 16, 1);
+        RETURN;
+    END
+
+    -- Validar que el horario exista
+    IF NOT EXISTS (SELECT 1 FROM horaMaterias WHERE Clave_Horario = @Clave_Horario)
+    BEGIN
+        RAISERROR('El horario no existe.', 16, 1);
+        RETURN;
+    END
+
+    -- Verificar si ya existe la asignación
+    IF EXISTS (SELECT 1 FROM maestro_horario WHERE Num_empleado = @Num_empleado AND Clave_Horario = @Clave_Horario)
+    BEGIN
+        IF @Sobrescribir = 1
+        BEGIN
+            UPDATE maestro_horario
+            SET Periodo = @Periodo,
+                Anio = @Anio
+            WHERE Num_empleado = @Num_empleado AND Clave_Horario = @Clave_Horario;
+            PRINT 'Asignación actualizada.';
+        END
+        ELSE
+        BEGIN
+            PRINT 'La asignación ya existe. Use @Sobrescribir=1 para actualizar.';
+        END
+    END
+    ELSE
+    BEGIN
+        INSERT INTO maestro_horario (Num_empleado, Clave_Horario, Periodo, Anio)
+        VALUES (@Num_empleado, @Clave_Horario, @Periodo, @Anio);
+        PRINT 'Asignación creada exitosamente.';
     END
 END;
 GO
