@@ -44,10 +44,12 @@ INSERT INTO dbo.horaMaterias
 
 INSERT INTO dbo.alumnos
 (Num_control, Nombre, Apellido_Paterno, Apellido_Materno, Carrera, Semestre, Curp, Clave_Paquete) VALUES
-('A001', 'Luis Humberto', 'Navejas', 'Diaz', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null),
-('A002', 'Julian', 'Navejas', 'Diaz', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null),
-('A003', 'Rafael', 'Navejas', 'Diaz', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null),
-('A004', 'Issac', 'Navejas', 'Diaz', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null);
+('A001', 'Oliver', 'Aguilar', 'Saavedra', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null),
+('A002', 'Jessica', 'Mendoza', 'Salgado', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null),
+('A003', 'Yasmin', 'Sal', 'Facudo', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null),
+('A004', 'Sarahy', 'Arambula', 'Garcia', 'Sistemas', 1, 'RUPM050727HNEBRNA1', null);
+('A005', 'Sofía', 'González', 'Mendoza', 'Sistemas', 1, 'SOGM060101HDFNRL01', NULL),
+('A006', 'Diego', 'Luna', 'Castillo', 'Sistemas', 1, 'DILC060202HDFNRL02', NULL);
 
 
 INSERT INTO dbo.registro_calificaciones
@@ -62,6 +64,8 @@ INSERT INTO maestros (Num_empleado, Nombre, Apellido_Paterno, Apellido_Materno, 
 VALUES 
 ('M001', 'Carlos', 'Hernández', 'López', 'carlos.hernandez@escuela.edu', 'Matemáticas', 1, '123456'),
 ('M002', 'María', 'Gómez', 'Pérez', 'maria.gomez@escuela.edu', 'Programación', 1, '123456');
+('M003', 'Laura', 'Fernández', 'Reyes', 'laura.fernandez@escuela.edu', 'Bases de Datos', 1, '123456'),
+('M004', 'Jorge', 'Ramírez', 'Soto', 'jorge.ramirez@escuela.edu', 'Redes', 1, '123456');
 
 
 INSERT INTO maestro_horario (Num_empleado, Clave_Horario, Periodo, Anio)
@@ -105,3 +109,17 @@ VALUES
 ('A004', 'C', 45, 2);
 
 
+-- Asignar al maestro 'M001' (Carlos Hernández) al horario 'FA01' (Programación I)
+EXEC dbo.AsignarMaestroAHorario @Num_empleado = 'M001',
+                                @Clave_Horario = 'FA01',
+                                @Periodo = 'Enero-Junio 2025',
+                                @Anio = 2025;
+
+-- Asignar al mismo maestro otro horario
+EXEC dbo.AsignarMaestroAHorario 'M001', 'GA01', 'Enero-Junio 2025', 2025;
+
+-- Intentar asignar duplicado sin sobrescribir (solo mostrará mensaje)
+EXEC dbo.AsignarMaestroAHorario 'M001', 'FA01', 'Agosto-Diciembre 2025', 2025, 0;
+
+-- Sobrescribir el período del horario FA01 para el maestro M001
+EXEC dbo.AsignarMaestroAHorario 'M001', 'FA01', 'Agosto-Diciembre 2025', 2025, 1;
